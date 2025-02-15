@@ -1,0 +1,597 @@
+/* Reset de base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+.chart-title {
+    color: black;
+    margin: 0.5rem 0;
+    text-align: center; /* ou left/right, selon vos préférences */
+    font-size: 0.9rem
+    
+  }
+  
+
+.center-message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #ffffff;
+    padding: 20px 30px;
+    border-radius: 10px;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    max-width: 80%;
+    width: 500px;
+    line-height: 1.4;
+}
+
+
+/* Corps de la page */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #12122c;
+    color: #333;
+}
+
+
+
+button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #2980b9;
+}
+
+button:focus {
+    outline: none;
+}
+
+
+header {
+    position: relative;
+    z-index: 9999;
+    background-color: rgb(190, 210, 252);
+    padding: 20px 10px; /* Augmenter l'espacement vertical du header */
+    display: flex;
+}
+
+.filters-container {
+    display: flex;
+    flex-direction: row; /* Aligne les filtres horizontalement */
+    gap: 30px; /* Augmenter l'espacement entre chaque filtre */
+    width: 100%; /* Occupation de 70% de la largeur de l'header */
+}
+
+.control-buttons {
+    position: absolute; /* Position absolue pour les placer en haut à droite */
+    top: 20px; /* Espacement du haut */
+    right: 10px; /* Espacement de la droite */
+    z-index: 1001;
+    display: flex;
+    flex-direction: column;
+    gap: 5px; /* Espacement entre les boutons */
+    align-items: flex-end;
+}
+
+.filter-item {
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column; /* Alignement vertical des éléments du filtre */
+    width: 150px; /* Largeur fixe pour chaque filtre */
+}
+
+label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: inline-block;
+}
+
+input[type="number"],
+input[type="text"],
+select,
+input[type="range"] {
+    width: 60%;
+    padding: 2px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    gap: 10px; /* Espacement entre les boutons */
+
+}
+
+input[type="range"] {
+    width: calc(100% - 40px);
+    display: inline-block;
+}
+
+input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+.health-conditions-checklist {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 5px;
+}
+
+.visualization-container {
+    margin-top: 30px;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr); /* Trois colonnes pour la première ligne */
+    grid-template-rows: auto auto; 
+    gap: 20px;
+    justify-items: center;
+}
+.visualization {
+    width: 100%;
+    height: 280px;
+    background-color: #ecf0f1;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+    color: #34495e;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+
+
+
+.visualization:nth-child(1) {
+    grid-column: 1 / span 2; 
+    grid-row: 1; 
+}
+.visualization:nth-child(3) {
+    grid-column: 3 / span 2; 
+    grid-row: 1;
+}
+.visualization:nth-child(4) {
+    grid-column: 5 / span 2;
+    grid-row: 1; 
+}
+
+
+
+.visualization:nth-child(5) {
+    grid-column: 1 / span 3; 
+    grid-row: 2; 
+}
+
+.visualization:nth-child(6) {
+    grid-column: 4 / span 3; 
+    grid-row: 2;
+}
+
+
+
+
+
+#percentageContainer {
+    margin-top: 10px;
+    font-size: 16px;
+    color: #2c3e50;
+}
+
+/* Affichage des filtres */
+#filters {
+    display: none;
+}
+
+#visualizationsContainer {
+    display: none;
+}
+
+/* Pour les écrans plus petits */
+@media (max-width: 768px) {
+    .visualization-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .visualization {
+        max-width: 100%;
+    }
+}
+
+
+.filters > * {
+    background-color: inherit ; /* Assure que les éléments enfants héritent du fond */
+}
+
+
+/* Bouton de changement de couleur */
+.color-change-btn {
+    padding: 5px 10px;  /* Taille réduite */
+    background-color: #1f2833; /* Bleu foncé */
+    color: white;
+    border: none;
+    cursor: pointer;
+    position: absolute;  /* Positionnement absolu pour le placer */
+    top: 10px;  /* À 10px du haut du conteneur */
+    left: 10px;  /* À 10px de la gauche du conteneur */
+    font-size: 12px;  /* Taille de texte réduite */
+    z-index: 2;  /* Assure que le bouton reste au-dessus d'autres éléments */
+    box-sizing: border-box;
+}
+
+.color-change-btn:hover {
+    background-color: #0d1b2a; 
+    transform: scale(1.1);  /* Légère augmentation de la taille */
+    /* Un bleu encore plus foncé pour l'effet hover */
+}
+
+/* Nouveau bouton pour afficher les pourcentages */
+.percentage-toggle-btn {
+    padding: 5px 10px;  /* Taille réduite */
+    background-color: #1f2833; /* Bleu foncé */
+    color: white;
+    border: none;
+    cursor: pointer;
+    position: absolute;  /* Positionnement absolu pour le placer */
+    top: 10px;  /* À 10px du haut du conteneur */
+    left: 50px;  /* À 50px de la gauche du conteneur, donc à côté du bouton de couleur */
+    font-size: 12px;  /* Taille de texte réduite */
+    z-index: 2;  /* Assure que le bouton reste au-dessus d'autres éléments */
+    box-sizing: border-box;
+}
+
+.percentage-toggle-btn:hover {
+    background-color: #0d1b2a; 
+    transform: scale(1.1); 
+}
+
+
+/* Style du bouton message-btn */
+.message-btn {
+    padding: 5px 10px;
+    background-color: #1f2833;  /* Bleu foncé */
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 12px;  /* Taille de texte ajustée */
+    border-radius: 5px;
+    position: absolute;  /* Position absolue */
+    top: 10px;  /* Position verticale à 10px du conteneur */
+    left: 90px; 
+    box-sizing: border-box;
+    z-index: 2;  /* Assure que le bouton reste au-dessus d'autres éléments */
+
+}
+
+/* Effet hover */
+.message-btn:hover {
+    background-color: #0d1b2a;  /* Un bleu plus foncé pour l'effet hover */
+    transform: scale(1.1);  /* Légère augmentation de la taille */
+}
+
+/* Icône de message à l'intérieur du bouton */
+.message-btn i {
+    margin-right: 5px;  /* Espacement entre l'icône et le texte */
+}
+
+
+/* Styles de la modale */
+.modal {
+    display: none; /* Cacher la modale par défaut */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Fond sombre semi-transparent */
+    z-index: 9999; /* Assurer que la modale reste au-dessus du contenu */
+    align-items: center;
+    justify-content: center;
+    display: flex; /* Utiliser flexbox pour centrer la modale */
+}
+
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 60%; /* Taille de la modale */
+    max-width: 500px; /* Largeur maximale */
+    text-align: center;
+}
+
+#visualization2 {
+    display: flex;
+    flex-direction: row; 
+    justify-content: flex-start; 
+    align-items: flex-start;
+    gap: 20px; 
+    padding: 10px;
+    background-color: #f7f7f7;
+    border-radius: 8px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%; /* Assurer que le conteneur utilise toute la largeur disponible */
+    overflow: hidden; /* Éviter que le contenu déborde */
+}
+
+
+
+
+/* Conteneur du graphique */
+#bubbleChart {
+    width: 200%;
+    height: 500px;
+    border: 1px solid #ccc;
+    margin: 20px auto;
+    background-color: #f9f9f9; /* Fond léger pour mieux voir les bulles */
+}
+
+/* Bulles */
+.bubble {
+    fill-opacity: 0.7;
+    stroke-width: 2;
+}
+
+/* Texte dans les bulles */
+.label {
+    font-size: 50px;
+    fill: white;
+    font-weight: bold;
+}
+
+#chartLegend {
+    position: absolute;
+    bottom: 5px;  /* Positionne la légende à 20px du bas de l'écran */
+    right: 5px;   /* Positionne la légende à 20px du côté droit de l'écran */
+    padding: 0px;  /* Ajoute du padding autour de la légende */
+}
+
+#chartLegend ul {
+    list-style-type: none;  /* Enlève les puces des éléments de la liste */
+    padding: 0;
+    margin: 0;
+}
+
+#chartLegend ul li {
+    display: flex;  /* Affiche les éléments de la légende en ligne */
+    align-items: center;  /* Centre les éléments verticalement */
+    margin-bottom: 8px;  /* Espace entre les éléments */
+}
+
+.legend-color {
+    display: inline-block;
+    width: 20px;  /* Largeur de la couleur */
+    height: 20px;  /* Hauteur de la couleur */
+    margin-right: 10px;  /* Espacement entre la couleur et le texte */
+    border-radius: 3px;  /* Coins légèrement arrondis pour les couleurs */
+}
+
+#chartLegend ul li span {
+    font-size: 14px;  /* Taille du texte */
+    font-weight: bold;  /* Gras pour le texte */
+}
+
+
+.message-btn2 {
+    padding: 5px 10px;
+    background-color: #1f2833;  /* Bleu foncé */
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 12px;  /* Taille de texte ajustée */
+    border-radius: 5px;
+    position: absolute;  /* Position absolue */
+    top: 10px;  /* Position verticale à 10px du conteneur */
+    left: 10px; 
+    box-sizing: border-box;
+    z-index: 2;  /* Assure que le bouton reste au-dessus d'autres éléments */
+
+}
+
+/* Effet hover */
+.message-btn2:hover {
+    background-color: #0d1b2a;  /* Un bleu plus foncé pour l'effet hover */
+    transform: scale(1.1);  /* Légère augmentation de la taille */
+}
+
+/* Icône de message à l'intérieur du bouton */
+.message-btn2 i {
+    margin-right: 5px;  /* Espacement entre l'icône et le texte */
+}
+
+
+.modal2 {
+    display: none; /* Cacher la modale par défaut */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Fond sombre semi-transparent */
+    z-index: 9999; /* Assurer que la modale reste au-dessus du contenu */
+    align-items: center;
+    justify-content: center;
+    display: flex; /* Utiliser flexbox pour centrer la modale */
+}
+
+.modal-content2 {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 60%; /* Taille de la modale */
+    max-width: 500px; /* Largeur maximale */
+    text-align: center;
+}
+
+
+
+.message-btn3 {
+    padding: 5px 10px;
+    background-color: #1f2833;  /* Bleu foncé */
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 12px;  /* Taille de texte ajustée */
+    border-radius: 5px;
+    position: absolute;  /* Position absolue */
+    top: 10px;  /* Position verticale à 10px du conteneur */
+    left: 10px; 
+    box-sizing: border-box;
+    z-index: 2;  /* Assure que le bouton reste au-dessus d'autres éléments */
+
+}
+
+/* Effet hover */
+.message-btn3:hover {
+    background-color: #0d1b2a;  /* Un bleu plus foncé pour l'effet hover */
+    transform: scale(1.1);  /* Légère augmentation de la taille */
+}
+
+/* Icône de message à l'intérieur du bouton */
+.message-btn3 i {
+    margin-right: 5px;  /* Espacement entre l'icône et le texte */
+}
+
+
+.modal3 {
+    display: none; /* Cacher la modale par défaut */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Fond sombre semi-transparent */
+    z-index: 9999; /* Assurer que la modale reste au-dessus du contenu */
+    align-items: center;
+    justify-content: center;
+    display: flex; /* Utiliser flexbox pour centrer la modale */
+}
+
+.modal-content3 {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 60%; /* Taille de la modale */
+    max-width: 500px; /* Largeur maximale */
+    text-align: center;
+}
+
+
+
+#horizontalBarChartLegend {
+    position: absolute;
+    top: 1px;   /* À 10px du haut */
+    right: 10px; /* À 10px de la droite */
+    padding: 10px;
+    border-radius: 5px; /* Optionnel : Coins arrondis */
+    z-index: 10; /* Optionnel : Pour que la légende soit au-dessus des autres éléments */
+    
+}
+
+/* Style des éléments dans la légende */
+#horizontalBarChartLegend ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+#horizontalBarChartLegend li {
+    margin-bottom: 8px;
+}
+
+.message-btn4 {
+    padding: 5px 10px;
+    background-color: #1f2833;  /* Bleu foncé */
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 12px;  /* Taille de texte ajustée */
+    border-radius: 5px;
+    position: absolute;  /* Position absolue */
+    top: 10px;  /* Position verticale à 10px du conteneur */
+    left: -px; 
+    box-sizing: border-box;
+    z-index: 2;  /* Assure que le bouton reste au-dessus d'autres éléments */
+
+}
+
+/* Effet hover */
+.message-btn4:hover {
+    background-color: #0d1b2a;  /* Un bleu plus foncé pour l'effet hover */
+    transform: scale(1.1);  /* Légère augmentation de la taille */
+}
+
+/* Icône de message à l'intérieur du bouton */
+.message-btn4 i {
+    margin-right: 5px;  /* Espacement entre l'icône et le texte */
+}
+
+/* PARTIE VISU 5*/
+.message-btn5 {
+    padding: 5px 10px;
+    background-color: #1f2833;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 12px;
+    border-radius: 5px;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    box-sizing: border-box;
+    z-index: 2;
+}
+
+.message-btn5:hover {
+    background-color: #0d1b2a;
+    transform: scale(1.1);
+}
+
+.message-btn5 i {
+    margin-right: 5px;
+}
+
+/* Modale identique aux autres */
+.modal5 {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content5 {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 60%;
+    max-width: 500px;
+    text-align: center;
+}
+
+/* Bouton de fermeture (croix) */
+.close-btn5 {
+    cursor: pointer;
+    float: right;
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: -5px;
+}
+
+.close-btn5:hover {
+    color: red;
+}

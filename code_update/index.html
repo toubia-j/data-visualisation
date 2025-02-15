@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Visualization Dashboard</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <link rel="stylesheet" href="index2.css"> <!-- Lien vers le fichier CSS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+
+<body>
+    <div id="centerMessage" class="center-message">
+        Bienvenue sur le tableau de bord d'analyse des données relatives à la crise cardiaque
+    </div>
+
+    <header>
+        <div class="filters-container">
+
+            <!-- Filtre pour l'âge -->
+            <div class="filter-item">
+                <label for="ageFilter">Âge :</label>
+                <input type="number" id="ageFilter" placeholder="Ex: 40" aria-label="Filtrer par âge">
+            </div>
+
+            <!-- Filtre pour le sexe -->
+            <div class="filter-item">
+                <label for="sexFilter">Sexe :</label>
+                <select id="sexFilter" aria-label="Filtrer par sexe">
+                    <option value="Male">Homme</option>
+                    <option value="Female">Femme</option>
+                </select>
+            </div>
+
+            <!-- Filtre par État de santé général -->
+            <div class="filter-item">
+                <label for="healthStatusFilter"> santé général :</label>
+                <select id="healthStatusFilter" aria-label="Filtrer par état de santé général">
+                    <option value="Excellent">Excellente</option>
+                    <option value="Very good">Très bonne</option>
+                    <option value="Good">Bonne</option>
+                    <option value="Fair">Moyenne</option>
+                    <option value="Poor">Mauvaise</option>
+                </select>
+            </div>
+
+            <!-- Filtre par Activités physiques -->
+            <div class="filter-item">
+                <label for="physicalActivityFilter"> activités physiques </label>
+                <input type="range" id="physicalActivityFilter" min="0" max="30" step="1" aria-label="Filtrer par nombre de jours d'activités physiques">
+                <span id="physicalActivityValue">15 jours</span>
+            </div>
+
+            <!-- Filtre par Sommeil -->
+            <div class="filter-item">
+                <label for="sleepHoursFilter">Heures de sommeil </label>
+                <input type="range" id="sleepHoursFilter" min="0" max="24" step="1" aria-label="Filtrer par heures de sommeil">
+                <span id="sleepHoursValue">12 heures</span>
+            </div>
+
+            <!-- Filtre par Problèmes de santé spécifiques (checkbox) -->
+            <div class="filter-item">
+                <label>Maladies </label>
+                <div class="health-conditions-checklist">
+                    <div>
+                        <input type="checkbox" id="Angina" name="healthCondition" value="HadAngina">
+                        <label for="Angina">Angina</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="SkinCancer" name="healthCondition" value="HadSkinCancer">
+                        <label for="SkinCancer">SkinCancer</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="asthma" name="healthCondition" value="HadAsthma">
+                        <label for="asthma">Asthme</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="COPD" name="healthCondition" value="HadCOPD">
+                        <label for="COPD">COPD</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filtre par Utilisation de Cigarettes ou de Vape -->
+            <div class="filter-item">
+                <label for="smokingStatusFilter">Statut de fumeur:</label>
+                <select id="smokingStatusFilter" aria-label="Filtrer par statut de fumeur">
+                    <option value="Current smoker - now smokes some days">Fumeur (fume quelques jours)</option>
+                    <option value="Never smoked">Jamais fumé</option>
+                    <option value="Former smoker">Ex-fumeur</option>
+                    <option value="Current smoker - now smokes every day">Fumeur (fume tous les jours)</option>
+                </select>
+            </div>
+            
+            <div class="filter-item">
+                <label for="hadCovidFilter"> eu le Covid ?</label>
+                <div>
+                    <input type="radio" id="hadCovidYes" name="hadCovid" value="Yes">
+                    <label for="hadCovidYes">Oui</label>
+                    
+                    <input type="radio" id="hadCovidNo" name="hadCovid" value="No">
+                    <label for="hadCovidNo">Non</label>
+                </div>
+            </div>
+
+            <!-- Section avec les boutons pour afficher les filtres -->
+            <div class="control-buttons">
+                <button id="applyFiltersBtn" aria-label="Appliquer les filtres">Appliquer</button>
+                <button id="projectDescriptionBtn">description</button>
+                <div id="projectModal" class="modal" style="display: none;">
+                    <div class="modal-content">
+                        <span class="close-btn" id="closeProjectModal">&times;</span>
+                        <p id="projectDescriptionText">
+                            Ce projet permet de donner une perception du risque qu'un utilisateur puisse avoir une crise cardiaque 
+                            en fonction de plusieurs facteurs saisis. En résultat, l'utilisateur peut explorer diverses visualisations,
+                            chacune représentant des données en fonction de critères précis pour mieux comprendre les facteurs influençant
+                            un infarctus et évaluer son propre risque.
+                        </p>
+                        
+                        <!-- Visualisations -->
+                        <h3>Visualisations disponibles :</h3>
+                        
+                        <!-- Visualisation 1 : Pie Chart -->
+                        <div class="visualization-section">
+                            <h4>1. Diagramme en secteurs </h4>
+                            <p>
+                                Ce graphique représente le taux de personnes ayant subi une crise cardiaque ou non, 
+                                partageant le même âge et le même sexe que l'utilisateur.
+                            </p>
+                        </div>
+                        
+                        <!-- Visualisation 2 : Bubble Chart -->
+                        <div class="visualization-section">
+                            <h4>2. Graphique à bulles </h4>
+                            <p>
+                                Ce graphique montre différents groupes de personnes selon des critères tels que le sexe, 
+                                le statut de fumeur, et l'historique de COVID. Cela permet à l'utilisateur de voir combien de personnes 
+                                ont un profil similaire au sien.
+                            </p>
+                        </div>
+                        
+                        <!-- Visualisation 3 : Radar Chart -->
+                        <div class="visualization-section">
+                            <h4>3. Diagramme radar </h4>
+                            <p>
+                                Ce diagramme compare deux groupes : ceux ayant eu une crise cardiaque et ceux qui n'en ont pas eu. 
+                                Il est basé sur des critères comme le sexe, les heures de sommeil, et l'activité physique.
+                            </p>
+                        </div>
+                        
+                        <div class="visualization-section">
+                            <h4>4.  histogramme horizontal </h4>
+                            <p>
+                                Ce graphique montre la distribution des personnes ayant eu une attaque cardiaque ou non, selon les différentes tranches d'âge. 
+                                Il prend en compte des facteurs tels que la santé générale, l'activité physique, les heures de sommeil, l'historique de COVID,
+                                ainsi que les maladies associées.
+                            </p>
+                        </div>   
+                        
+                        <div class="visualization-section">
+                            <h4>5. Carte Us </h4>
+                            <p>
+                                Cette carte représente la proportion de personnes ayant eu
+                                une crise cardiaque dans chaque État avec un code couleur.
+                                Elle est basée sur l'âge, le sexe.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </header>
+
+    <!-- Zone pour les visualisations -->
+    <main class="visualization-container" style="display: none;" id="visualizationsContainer">
+        
+        <!-- VISU 1 : Pie Chart -->
+         <div class="visualization">
+        <div class="visualization" id="visualization1">
+            
+
+            <!-- Boutons d'interaction -->
+            <button class="color-change-btn" aria-label="Changer la couleur du graphique">
+                <i class="fas fa-paint-brush"></i>
+            </button>
+            <button class="percentage-toggle-btn" aria-label="Basculer l'affichage en pourcentage">
+                <i class="fas fa-percent"></i>
+            </button>
+            <button class="message-btn" aria-label="Afficher un message">
+                <i class="fas fa-comment"></i>  <!-- Icône de message -->
+            </button>
+
+            <div id="percentageContainer" style="display: none;">
+                <div id="percentageDisplay"></div>
+            </div>
+            <div id="horizontalBarChartLegend">
+                <ul>
+                    <li>Répartition HeartAttack </li>
+                </ul>
+            </div>
+            
+            <!-- Lieu où le graphique D3 s’insère -->
+        </div>
+    </div>
+        
+        <!-- Modale associée -->
+        <div id="modal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close-btn">&times;</span>
+                <p id="modalText">
+                    Ce graphique en secteurs représente la répartition des individus ayant ou n'ayant pas subi une crise cardiaque, en fonction de filtres spécifiques liés à l'âge et au sexe.
+                </p>
+            </div>
+        </div>
+        
+        <!-- VISU 2 : Bubble Chart -->
+        <div class="visualization" id="visualization2">
+            
+            <div id="bubbleChartContainer">
+                <button class="message-btn2" aria-label="Afficher un message">
+                    <i class="fas fa-comment"></i>
+                </button>
+                <svg id="bubbleChart"></svg>
+            </div>
+
+            <div id="chartLegend">
+                <ul>
+                    <li>Bubble Chart (Sex-CovidPos-SmokerStatus)  </li>
+                    <li><span class="legend-color" style="background-color: #df2302;"></span>Groupe similaire</li>
+                </ul>
+            </div>
+
+            <div id="modal2" class="modal2" style="display: none;">
+                <div class="modal-content2">
+                    <span class="close-btn2">&times;</span>
+                    <p id="modalText2">
+                        Ce graphique montre différents groupes de personnes selon des critères tels que le sexe, 
+                        le statut de fumeur, et l'historique de COVID.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- VISU 3 : Radar Chart -->
+        <div class="visualization" id="visualization3">
+            
+            <div id="radarChartContainer">
+                <button class="message-btn3" aria-label="Afficher un message">
+                    <i class="fas fa-comment"></i>
+                </button>
+                <svg id="radarChart"></svg> <!-- Graphique radar -->
+            </div>
+
+            <div id="radarChartLegend">
+                <ul style="list-style-type: none; padding-left: 0; margin-left: -20px;">
+                    <li>Radar Chart</li>
+                    <li><span class="legend-color" style="background-color: #03a539;"></span>HeartAttack-Yes</li>
+                    <li><span class="legend-color" style="background-color: #f80303;"></span>HeartAttack-No</li>
+                </ul>
+            </div>
+            
+
+            <div id="tooltip" style="position: absolute; visibility: hidden; background-color: rgba(0, 0, 0, 0.7); color: white; padding: 5px; border-radius: 4px;"></div>
+
+            <div id="modal3" class="modal3" style="display: none;">
+                <div class="modal-content3">
+                    <span class="close-btn3">&times;</span>
+                    <p id="modalText3">
+                        Ce diagramme compare deux groupes : ceux ayant eu une crise cardiaque et ceux qui n'en ont pas eu.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- VISU 4 : Courbes vs Âges -->
+        <div class="visualization" id="visualization4">
+
+            <div id="tooltip2" style="position: absolute; visibility: hidden; background-color: rgba(0, 0, 0, 0.7); color: white; padding: 5px; border-radius: 4px;"></div>
+
+            <div id="horizontalBarChartContainer">
+                <button class="message-btn4" aria-label="Afficher un message">
+                    <i class="fas fa-comment"></i>
+                </button>
+                <svg id="horizontalBarChart"></svg>
+            </div>
+
+            <div id="horizontalBarChartLegend">
+                <ul>
+                    <li>Bar Chart (ligne vs Âges)</li>
+                    <li><span class="legend-color" style="background-color: #03a539;"></span>HeartAttack_yes</li>
+                    <li><span class="legend-color" style="background-color: #ee0404;"></span>HeartAttack-No</li>
+                </ul>
+            </div>
+
+            <div id="modal4" class="modal3" style="display: none;">
+                <div class="modal-content3">
+                    <span class="close-btn4">&times;</span>
+                    <p id="modalText4">
+                        Ce graphique montre la distribution des personnes ayant eu une attaque cardiaque ou non, selon les différentes tranches d'âge.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- VISU 5 : Carte US -->
+        <div class="visualization" id="visualization5">
+
+            <button class="message-btn5" aria-label="Afficher un message">
+                <i class="fas fa-comment"></i>
+            </button>
+
+            <div id="horizontalBarChartLegend">
+                <ul>
+                    <li> Carte US – % HadHeartAttack</li>
+                </ul>
+            </div>
+            <div id="modal5" class="modal5" style="display: none;">
+                <div class="modal-content5">
+                    <span class="close-btn5">&times;</span>
+                    <p id="modalText5">
+                        Cette carte représente la proportion de personnes ayant eu une crise cardiaque dans chaque État.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="index2.js" defer></script>
+    <script src="index2_1.js" defer></script>
+</body>
+</html>
